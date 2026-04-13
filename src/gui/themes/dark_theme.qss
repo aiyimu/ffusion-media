@@ -283,3 +283,20 @@ QSlider::sub-page:horizontal {
     background: #2a2a4a;
     border-radius: 3px;
 }
+
+#previewArea {
+    background-color: #0a0a15;
+    border: 2px dashed #333;
+    border-radius: 8px;
+}
+
+#controlsArea {
+    background-color: #16213e;
+}
+
+#startPreview, #endPreview {
+    border: 2px dashed #888;
+    border-radius: 8px;
+    background-color: rgba(255,255,255,0.05);
+    color: #cccccc;
+}

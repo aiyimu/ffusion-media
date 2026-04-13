@@ -36,19 +36,13 @@ class VideoPreviewWidget(QWidget):
         
         self._preview_area = VideoPreviewArea()
         self._preview_area.setMinimumSize(400, 250)
-        self._preview_area.setStyleSheet("""
-            QWidget {
-                background-color: #0a0a15;
-                border: 2px dashed #333;
-                border-radius: 8px;
-            }
-        """)
+        self._preview_area.setObjectName("previewArea")
         
         layout.addWidget(self._preview_area, 1)
         
         controls = QWidget()
         controls.setFixedHeight(60)
-        controls.setStyleSheet("background-color: #16213e;")
+        controls.setObjectName("controlsArea")
         
         controls_layout = QHBoxLayout(controls)
         controls_layout.setContentsMargins(15, 10, 15, 10)

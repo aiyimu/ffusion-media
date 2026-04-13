@@ -24,22 +24,24 @@ class FileItemWidget(QWidget):
         self._setup_ui()
     
     def _setup_ui(self):
-        self.setFixedHeight(50)
+        self.setMinimumHeight(56)
         
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(10, 5, 10, 5)
-        layout.setSpacing(10)
+        layout.setContentsMargins(12, 6, 12, 6)
+        layout.setSpacing(12)
         
         path = Path(self.file_path)
         icon_label = QLabel("📄")
-        icon_label.setFixedSize(32, 32)
+        icon_label.setFixedSize(36, 36)
         icon_label.setAlignment(Qt.AlignCenter)
+        icon_label.setStyleSheet("font-size: 24px;")
         
         info_layout = QVBoxLayout()
-        info_layout.setSpacing(2)
+        info_layout.setSpacing(3)
         
         name_label = QLabel(path.name)
-        name_label.setStyleSheet("font-weight: 500;")
+        name_label.setStyleSheet("font-weight: 500; font-size: 13px;")
+        name_label.setWordWrap(False)
         
         size_label = QLabel(self._format_size(path.stat().st_size))
         size_label.setStyleSheet("font-size: 11px; opacity: 0.6;")
@@ -48,8 +50,14 @@ class FileItemWidget(QWidget):
         info_layout.addWidget(size_label)
         
         remove_btn = QPushButton("✕")
-        remove_btn.setFixedSize(28, 28)
+        remove_btn.setFixedSize(32, 32)
         remove_btn.setCursor(Qt.PointingHandCursor)
+        remove_btn.setStyleSheet("""
+            QPushButton {
+                font-size: 18px;
+                border-radius: 16px;
+            }
+        """)
         remove_btn.clicked.connect(lambda: self.removed.emit(self.file_path))
         
         layout.addWidget(icon_label)
@@ -74,31 +82,39 @@ class FileUploadWidget(QWidget):
         self._setup_ui()
     
     def _setup_ui(self):
-        self.setMinimumHeight(200)
+        self.setMinimumHeight(320)
         
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(10)
+        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setSpacing(16)
         
         drop_area = DropAreaWidget(self._supported_formats)
         drop_area.files_dropped.connect(self._on_files_dropped)
         drop_area.clicked.connect(self._open_file_dialog)
         layout.addWidget(drop_area)
         
+        list_label = QLabel("📋 文件清单")
+        list_label.setStyleSheet("font-weight: 600; font-size: 14px; padding-left: 4px;")
+        layout.addWidget(list_label)
+        
         self._file_list = QListWidget()
         self._file_list.setFrameShape(QFrame.NoFrame)
-        self._file_list.setSpacing(5)
+        self._file_list.setSpacing(8)
+        self._file_list.setMinimumHeight(120)
         layout.addWidget(self._file_list, 1)
         
         btn_layout = QHBoxLayout()
-        btn_layout.setContentsMargins(0, 0, 0, 0)
+        btn_layout.setContentsMargins(4, 0, 4, 0)
+        btn_layout.setSpacing(12)
         
         add_btn = QPushButton("➕ 添加文件")
         add_btn.setCursor(Qt.PointingHandCursor)
+        add_btn.setMinimumHeight(36)
         add_btn.clicked.connect(self._open_file_dialog)
         
         clear_btn = QPushButton("🗑️ 清空列表")
         clear_btn.setCursor(Qt.PointingHandCursor)
+        clear_btn.setMinimumHeight(36)
         clear_btn.clicked.connect(self._clear_files)
         
         btn_layout.addWidget(add_btn)
@@ -139,7 +155,7 @@ class FileUploadWidget(QWidget):
         self._files.append(file_path)
         
         item = QListWidgetItem()
-        item.setSizeHint(QSize(0, 60))
+        item.setSizeHint(QSize(0, 70))
         
         file_widget = FileItemWidget(file_path)
         file_widget.removed.connect(self._remove_file)
@@ -190,7 +206,8 @@ class DropAreaWidget(QWidget):
         self.setAcceptDrops(True)
     
     def _setup_ui(self):
-        self.setFixedHeight(120)
+        self.setMinimumHeight(100)
+        self.setFixedHeight(100)
         self.setStyleSheet("""
             QWidget {
                 border: 2px dashed #888;
@@ -205,10 +222,11 @@ class DropAreaWidget(QWidget):
         
         layout = QVBoxLayout(self)
         layout.setSpacing(8)
+        layout.setContentsMargins(12, 12, 12, 12)
         
         icon_label = QLabel("📂")
         icon_label.setAlignment(Qt.AlignCenter)
-        icon_label.setStyleSheet("font-size: 36px; border: none;")
+        icon_label.setStyleSheet("font-size: 40px; border: none;")
         
         text1 = QLabel("拖拽文件到这里，或点击选择文件")
         text1.setAlignment(Qt.AlignCenter)

@@ -91,16 +91,12 @@ class TimelineWidget(QWidget):
         self._start_preview = QLabel("首帧预览")
         self._start_preview.setAlignment(Qt.AlignCenter)
         self._start_preview.setMinimumSize(120, 80)
-        self._start_preview.setStyleSheet("""
-            QLabel { border: 2px dashed #888; border-radius: 8px; background-color: rgba(0,0,0,0.05); }
-        """)
+        self._start_preview.setObjectName("startPreview")
         
         self._end_preview = QLabel("尾帧预览")
         self._end_preview.setAlignment(Qt.AlignCenter)
         self._end_preview.setMinimumSize(120, 80)
-        self._end_preview.setStyleSheet("""
-            QLabel { border: 2px dashed #888; border-radius: 8px; background-color: rgba(0,0,0,0.05); }
-        """)
+        self._end_preview.setObjectName("endPreview")
         
         preview_layout.addWidget(self._start_preview)
         preview_layout.addStretch()
@@ -207,6 +203,11 @@ class TimelineBar(QWidget):
     
     def paintEvent(self, event):
         from PySide6.QtGui import QPainter, QColor, QPen, QBrush
+        from PySide6.QtWidgets import QStyleOption, QStyle
+        from PySide6.QtGui import QPalette
+        
+        opt = QStyleOption()
+        opt.initFrom(self)
         
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
@@ -214,9 +215,14 @@ class TimelineBar(QWidget):
         w = self.width()
         h = self.height()
         
-        bg_color = QColor(60, 60, 80)
+        bg_color = opt.palette.color(QPalette.Window)
+        if bg_color.lightness() > 128:
+            bg_color = QColor(220, 220, 220)
+        else:
+            bg_color = QColor(60, 60, 80)
+        
         selected_color = QColor(233, 69, 96)
-        handle_color = QColor(255, 255, 255)
+        handle_color = QColor(255, 255, 255) if bg_color.lightness() <= 128 else QColor(50, 50, 50)
         
         painter.fillRect(0, 10, w, h - 20, bg_color)
         
